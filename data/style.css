@@ -1,0 +1,6 @@
+header{
+    background-image:url("/data/chicon.jpg");
+}
+a.l{background:red;color:white;text-decoration: none;}
+a.l:hover{background:blue;}
+.r{size: 80px;width:80px;}
