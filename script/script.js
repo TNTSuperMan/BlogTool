@@ -14,7 +14,7 @@ function Get(url){
 function LoadPage(main,tmp,page){
     for(let i = 0;i < page.length;++i){
         switch(page[i][0]){
-            case ':': //Element
+            case ':':
                 let ss = page[i].split(':');
                 if(ss.length !== 3) {
                     err(i + 1 + " Line :xxx~ define is incorrect");
@@ -35,7 +35,7 @@ function LoadPage(main,tmp,page){
                 }
                 main.appendChild(m);
                 break;
-            case ';': //Template
+            case ';':
                 let rr = page[i].split(';');
                 if(rr.length < 3){
                     console.error("err");
@@ -71,32 +71,29 @@ function LoadPlugin(){
             return null;
         }
     };
-    const addscript = (path)=>{
-        let atd = document.createElement("script");
-        atd.setAttribute("src",path);
-        h.appendChild(atd);
-    }
-    const addmodule = (path)=>{
-        let scr = document.createElement("script");
-        scr.setAttribute("src",path);
-        scr.setAttribute("type","module");
-        h.appendChild(scr);
-    }
 
     const pcfg = loadjson("/config/plugin.json");
     if(pcfg === null){
         err("Not Found plugin.json");
         return;
     }
-    for(let i = 0;i < pcfg.length;++i){
-        let plugc = loadjson("/plugin/" + pcfg[i] + "/config.json");
-        if(plugc === null) continue;
-        for(let s = 0;s < plugc.script.length;++i){
-            addscript(plugc.script[s]);
-        }
-        for(let s = 0;s < plugc.module.length;++i){
-            addmodule(plugc.module[s]);
-        }
+    
+    for(let s = 0;s < pcfg.script.length;++s){
+        let atd = document.createElement("script");
+        atd.setAttribute("src",pcfg.script[s]);
+        h.appendChild(atd);
+    }
+    for(let s = 0;s < pcfg.module.length;++s){
+        let scr = document.createElement("script");
+        scr.setAttribute("src",pcfg.module[s]);
+        scr.setAttribute("type","module");
+        h.appendChild(scr);
+    }
+    for(let s = 0;s < pcfg.css.length;++s){
+        let scr = document.createElement("link");
+        scr.setAttribute("href",pcfg.css[s]);
+        scr.setAttribute("rel","stylesheet");
+        h.appendChild(scr);
     }
 }
 
@@ -108,7 +105,7 @@ function load(siteid){
         return;
     }
 
-    //LoadPlugin();
+    LoadPlugin();
     
     if(tmp === undefined){
         let tmpfile = Get("/config/temp.json");
