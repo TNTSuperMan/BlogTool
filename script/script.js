@@ -1,5 +1,4 @@
 let tmp = undefined;
-let gflag = false;
   
 
 function log(txt){console.log(txt)}
@@ -12,7 +11,7 @@ function Get(url){
     return file;
 }
 
-function loadpagedata(main,tmp,page){
+function LoadPage(main,tmp,page){
     for(let i = 0;i < page.length;++i){
         switch(page[i][0]){
             case ':': //Element
@@ -51,13 +50,52 @@ function loadpagedata(main,tmp,page){
                 for(let j = 0;j < rr.length - 2;++j){
                     tmps=tmps.replace('%',rr[2+j]);
                 }
-                loadpagedata(main,tmp,tmps.split('\n'));
+                LoadPage(main,tmp,tmps.split('\n'));
                 break;
             case '<':
                 let c = document.createElement("div");
                 c.innerHTML = page[i];
                 main.appendChild(c);
                 break;
+        }
+    }
+}
+
+function LoadPlugin(){
+    const h = document.querySelector("head");
+    const loadjson = (path)=>{
+        let f = Get(path);
+        if(f.status === 200){
+            return JSON.parse(f.responseText);
+        }else{
+            return null;
+        }
+    };
+    const addscript = (path)=>{
+        let atd = document.createElement("script");
+        atd.setAttribute("src",path);
+        h.appendChild(atd);
+    }
+    const addmodule = (path)=>{
+        let scr = document.createElement("script");
+        scr.setAttribute("src",path);
+        scr.setAttribute("type","module");
+        h.appendChild(scr);
+    }
+
+    const pcfg = loadjson("/config/plugin.json");
+    if(pcfg === null){
+        err("Not Found plugin.json");
+        return;
+    }
+    for(let i = 0;i < pcfg.length;++i){
+        let plugc = loadjson("/plugin/" + pcfg[i] + "/config.json");
+        if(plugc === null) continue;
+        for(let s = 0;s < plugc.script.length;++i){
+            addscript(plugc.script[s]);
+        }
+        for(let s = 0;s < plugc.module.length;++i){
+            addmodule(plugc.module[s]);
         }
     }
 }
@@ -69,42 +107,39 @@ function load(siteid){
         document.querySelector("body").innerText = "404!";
         return;
     }
+
+    //LoadPlugin();
     
     if(tmp === undefined){
         let tmpfile = Get("/config/temp.json");
-        if(tmpfile.status !== 200){
-            err("Not Found Template Configfile");
-            load(404);return;
-        }
+        if(tmpfile.status !== 200){err("Not Found Template Configfile");return;}
         tmp = JSON.parse(tmpfile.responseText);
+
+
+        let headertxt = Get("/page/header.page");
+        if(headertxt.status !== 200){
+            err("Not Found PageFile: header.page");
+            load(404);return;}
+        let footertxt = Get("/page/footer.page");
+        if(footertxt.status !== 200){
+            err("Not Found PageFile: footer.page");
+            load(404);return;}
+        let head = document.createElement("header");
+        LoadPage(head,tmp,headertxt.responseText.split('\n'));
+        b.appendChild(head);
+        let foot = document.createElement("footer");
+        LoadPage(foot,tmp,footertxt.responseText.split('\n'));
+        b.appendChild(foot);
     }
+    
     let site = Get("/page/" + siteid + ".page");
     if(site.status !== 200){
         err("Not Found PageFile: " + siteid + ".page");
         load(404);return;
     }
-    if(!gflag){
-        let headertxt = Get("/page/header.page");
-        if(headertxt.status !== 200){
-            err("Not Found PageFile: header.page");
-            load(404);return;
-        }
-        let footertxt = Get("/page/footer.page");
-        if(footertxt.status !== 200){
-            err("Not Found PageFile: footer.page");
-            load(404);return;
-        }
-        let head = document.createElement("header");
-        loadpagedata(head,tmp,headertxt.responseText.split('\n'));
-        b.appendChild(head);
-        let foot = document.createElement("footer");
-        loadpagedata(foot,tmp,footertxt.responseText.split('\n'));
-        b.appendChild(foot);
-        gflag=true;
-    }
     
     let main = document.createElement("main");
-    loadpagedata(main,tmp,site.responseText.split('\n'));
+    LoadPage(main,tmp,site.responseText.split('\n'));
     b.appendChild(main);
     b.appendChild(document.querySelector("footer"));
 }
