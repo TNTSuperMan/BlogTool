@@ -1,5 +1,5 @@
 {
     "script" : [],
     "module" : ["https://cdn.cubing.net/js/cubing/twisty"],
-    "css" : ["/data/style.css"]
+    "css" : ["/resources/style.css"]
 }

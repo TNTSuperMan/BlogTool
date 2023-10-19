@@ -1,5 +1,5 @@
 header{
-    background-image:url("/data/chicon.jpg");
+    background-image:url("/resources/icon.png");
 }
 a.l{background:red;color:white;text-decoration: none;}
 a.l:hover{background:blue;}
