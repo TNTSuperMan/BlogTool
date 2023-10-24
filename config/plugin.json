@@ -1,5 +1,9 @@
 {
-    "script" : [],
-    "module" : ["https://cdn.cubing.net/js/cubing/twisty"],
-    "css" : ["/resources/style.css"]
+    "script" : [
+        "/data/textopage.min.js"
+    ],"module":[
+
+    ],"css":[
+        "/resources/style.css"
+    ]
 }
