@@ -73,7 +73,12 @@ function lm(id){
         const b = $("body");
         const tmpfile = Get("/config/temp.json");
         if(tmpfile.status !== 200){err("Not Found Template Configfile");return;}
-        tmp = JSON.parse(tmpfile.responseText);
+        let tmp_conv = {id: [],temp: []};
+        let tmp_orgobj = JSON.parse(tmpfile.responseText)
+        tmp_orgobj.forEach(function(value){tmp_conv.id.push(value.id);
+            tmp_conv.temp.push(value.base);
+        });
+        tmp = tmp_conv;
 
         b.append(e("header"));
         b.append(e("main"));
