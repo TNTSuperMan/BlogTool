@@ -68,33 +68,34 @@ function outpage(query,texts){
 }
 
 function lm(id){
-    if(id === 404){
-        lm(1);
-        return;
-    }
 
     if(tmp == null){
-    const b = $("body");
-    const tmpfile = Get("/config/temp.json");
-    if(tmpfile.status !== 200){err("Not Found Template Configfile");return;}
-    tmp = JSON.parse(tmpfile.responseText);
+        const b = $("body");
+        const tmpfile = Get("/config/temp.json");
+        if(tmpfile.status !== 200){err("Not Found Template Configfile");return;}
+        tmp = JSON.parse(tmpfile.responseText);
 
-    b.append(e("header"));
-    b.append(e("main"));
-    b.append(e("footer"));
-    $("head").append(e("title"));
+        b.append(e("header"));
+        b.append(e("main"));
+        b.append(e("footer"));
+        $("head").append(e("title"));
 
-    let headertxt = Get("/page/header.page");
-    if(headertxt.status !== 200){
-        err("Not Found PageFile: header.page");
-        lm(404);return;}
-    outpage("header",headertxt.responseText.split('\n'));
+        let headertxt = Get("/page/header.page");
+        if(headertxt.status !== 200){
+            err("Not Found PageFile: header.page");
+            lm(404);return;}
+        outpage("header",headertxt.responseText.split('\n'));
 
-    let footertxt = Get("/page/footer.page");
-    if(footertxt.status !== 200){
-        err("Not Found PageFile: footer.page");
-        lm(404);return;}
-    outpage("footer",footertxt.responseText.split('\n'));
+        let footertxt = Get("/page/footer.page");
+        if(footertxt.status !== 200){
+            err("Not Found PageFile: footer.page");
+            lm(404);return;}
+        outpage("footer",footertxt.responseText.split('\n'));
+        const c = function(c){document.body.innerHTML+=c};
+        c("<a href=\"#\" id=\"dialogb63756\">Powered by TextoPage.js</a>");
+        c("<div id=\"dialog29543\" style=\"display:none\" title=\"about: TextoPage.js\">Powered by TextoPage.js<br>"
+         +"<a target=\"_blank\" href=\"https://github.com/TNTSuperMan/TextoPage.js\">TextoPage.js Repository</a>"
+         +"</div>");
     }
     const c = "/page/"+id+".page";
     let site = Get(c);
@@ -134,4 +135,7 @@ $(function(){
     }else{
         lm(1);
     }
+    $("#dialogb63756").on("click",function(){
+        $("#dialog29543").dialog();
+    });
 });

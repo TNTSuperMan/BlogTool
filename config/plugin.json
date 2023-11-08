@@ -1,9 +1,10 @@
 {
-    "script" : [
+    "script":[
+        "https://code.jquery.com/ui/1.11.4/jquery-ui.min.js",
         "/data/textopage.min.js"
     ],"module":[
-
     ],"css":[
-        "/resources/style.css"
+        "resources/style.css",
+        "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"
     ]
 }
